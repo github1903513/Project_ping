@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+  <title>Todo_list</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/todo_list.css">
+
+  <meta name="theme-color" content="#fafafa">
+
+</head>
+<body>
+
+ <!-- boilerplate code --> 
+  <script src="js/vendor/modernizr-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+<!-- Add my application content here start -->
+
+	<h1>Create ToDo List</h1>
+	<p>Please enter your Todo list items and add them to Todo list table!</p>
+	<div class="container">
+	<table  class="tablestyle" id="inputTable">
+	<!--<form action="" class="form-control add-todo">onfocus="validateAlert()" onblur="hiddenAlert()"-->
+	<tr>
+	<td><div class="col-25"><span >User guide :</div>
+		<div class="col-75"><span class="showBtn" onclick="showGuide()">/show</span><span class="showBtn" onclick="hiddenGuide()">hidden</span></div>
+	</td>
+	</tr>
+	<tr>
+	<td>&nbsp;</td>
+	</tr>
+	<tr id="guide" style="display:none">
+	<td>
+	<span><b>1.Validate task is 1-20 characters, include 0-9,a-z.A-Z,_ or  spaces<br></span>
+	<span><b>2.Click the show all checkbox to list all of the task<br></span>
+	<span><b>3.Drag and drop the task to sort the task</span>
+	</td>
+	</tr>
+	<tr>
+	<td><div class="col-25">Task :</div>
+	<div class="col-75"><input name="Taskname" type="text" id="Taskname" size="20">
+	</div>
+	</td>
+	</tr>
+	<tr>
+	<td><div class="col-25">Priority :</div>
+	<div class="col-75">
+		<select name="priority" id="priority">
+		<option value="Highest" selected>Highest</option>
+		<option value="Medium">Medium</option>
+		<option value="Lowest">Lowest</option>
+		</select>
+	</div>
+	</td>
+	</tr>
+	<tr>
+	<td>
+	<!--<input type="button" value = "Submit" onclick="return additemtoTable()" >-->
+	<span onclick="return additemtoTable()" class="addBtn" id="addBtn">Add</span>
+	</td>
+	</tr>
+	<!--</form>-->
+	
+	</table>
+	</div>
+
+<br>
+<br>
+
+<div id="outputDIV" >
+	<h2>ToDo List:</h2><span style="float:middle;">&nbsp;&nbsp;<input type="checkbox" id="showAll" name="showAll" value="showAll">show all taskname</span>
+	<table style="width:50%" class="showtablestyle" id="outputTable" border="0">
+	
+	<tr>
+	<th style="width:20%">Task name 
+	<th style="width:10%">Priority 
+	<th style="width:5%">Delete 
+	</tr>
+	
+	</table>
+	
+</div>
+<!-- Add my application content here end -->
+
+
+<!-- script tag is where Javascript goes to -->
+    <script>
+		document.getElementById('showAll').checked = false; //unchecked the showAll checkbox
+		
+        //show the guide
+		function showGuide() 
+		{
+			var x=document.getElementById("guide"); //get object
+			x.style.display= "block"; //show
+			
+		}
+		//hidden the guide
+		function hiddenGuide()
+		{
+			var x=document.getElementById("guide");//get object
+			x.style.display= "none"; //hidden
+			
+		}
+		
+		
+		//show all the task list
+		var show = document.getElementById('showAll'); //get element
+		show.addEventListener("click", function(){ //add click event
+		if(show.checked == true) //is checked?
+		{
+			for (i = 0; i < document.getElementsByClassName("del").length; i++) //handle all of the task by delete button
+		{
+			var div = document.getElementsByClassName("del")[i].parentElement;//delete button's parent node
+			div.style.display = "block"; //show it
+			div.style= "showtablestyle"; //css
+		}
+		}
+		
+		});
+
+		
+		//input validate check
+		function submitCheck()
+		{
+			var x=document.getElementById("Taskname");//get object
+			var text = document.getElementById("Taskname").value; // get the task name
+			var str = text.trim();//Remove the spaces at the beginning and end of the string
+			var validinputType = new RegExp("^[0-9a-zA-Z \-'_]{1,20}$"); //(Regular expression)validate type:0-9,a-z.A-Z,_ ja spaces
+		
+			if(str.length== 0) //input is none?
+			{
+				alert("The task can't empty,Plase input!"); //alert
+				return false;
+			}
+			else
+			{
+				if (validinputType.test(str)==false) //validatetype? Regular expression
+				{ 
+　　　　			
+				return false; //one of the characters is invalidate
+　　				} 
+				else
+				{
+				return true; //all of the characters are validate
+				}
+				
+			}
+		}
+		
+		//add the item to Todo_list
+		function additemtoTable()
+		{
+			var invalidInput = submitCheck();//input validate check
+			if(invalidInput == true)
+			{
+			var x=document.getElementById("Taskname");//get taskname object
+			var Y=document.getElementById("priority");//get priority object
+			var text = x.value; //get the value
+			var text2 = Y.value;//get the value
+			
+			
+			var tr = document.createElement('tr'); //create tr
+			tr.setAttribute("draggable",true); // draggable for drag and drop
+			//tr.setAttribute('ondragover','dragOver(event)');
+			tr.setAttribute('ondragstart','dragStart(event)'); //set dragstart event
+			//tr.setAttribute('ondragend','dragEnd(event)');
+			tr.setAttribute('ondragenter','dragEnter(event)') //set dragenter event
+			tr.setAttribute('id',"dragable");
+			
+			var td = tr.appendChild(document.createElement('td')); //create td for task
+				td.innerHTML = text;
+			var td2 = tr.appendChild(document.createElement('td')); //create td for priority
+				td2.innerHTML = text2;
+			var td3 = tr.appendChild(document.createElement('td')); //create td for delete
+				td3.setAttribute("class","del"); //add css
+				td3.innerHTML = "<span>X</span>"; //add mark
+				
+			document.getElementById("outputTable").appendChild(tr); //add tr to outputtable
+				
+			for (i = 0; i < del.length; i++) // for all of the task item
+		{
+			del[i].onclick = function() //add onclick event
+			{
+			var div = this.parentElement; //get tr
+			div.style.display = "none"; //hidden the task
+			document.getElementById('showAll').checked = false;//if showall checked,cancel it
+			}
+		}	
+				
+			
+			document.getElementById("Taskname").value = null;//task input is null
+			document.getElementById("Taskname").style.border ="1px solid #ccc"; 
+			document.getElementById("Taskname").focus(); //move cursor to input item
+			document.getElementById('showAll').checked = false; //if showall checked,cancel it
+			
+			return true;
+			}
+			else
+			{   
+				alert("Valid type is 1-20bytes :0-9,a-z.A-Z,_ ja spaces!"); //alert
+				document.getElementById("Taskname").value = null; //task input is null
+				document.getElementById("Taskname").style.border = "2px solid red"; //indicate input item
+				document.getElementById("Taskname").focus(); //move cursor to input item
+				return false;
+			}
+			
+		}
+		
+		// define delete button to hide the current list item
+		var del = document.getElementsByClassName("del"); //get tr element
+		var i;
+		for (i = 0; i < del.length; i++) //for all the task
+		{
+			del[i].onclick = function() //define the function
+			{
+			var div = this.parentElement; //get tr
+			div.style.display = "none"; //display it
+			document.getElementById('showAll').checked = false;//if showall checked,cancel it
+			}
+		}
+		
+		//drag and drop 
+		var source;
+		
+		//when drag start
+		function dragStart(e) {
+			source = e.target; //get the target
+			e.dataTransfer.effectAllowed = 'move'; //define the drag effect is move
+		}
+
+		//Determine whether A and B are the same node under Tr or different Tr nodes
+		function isbefore(a, b) {
+			if (a.parentNode == b.parentNode) {//if A and B are included in the same tr
+			for (var cur = a; cur; cur = cur.previousSibling) {//traverse all the td items included in the same tr
+            if (cur === b) {
+                return true; 
+            }
+			}
+			}
+		return false; //if A and B are not included in the same tr
+		}
+
+		//drop the note
+		function dragEnter(e) {
+		var targetelem = e.target; //get the target
+		if (targetelem.nodeName == "TD") { //if selected note is td
+			targetelem = targetelem.parentNode;   //get the td's parentnode tr
+		}  
+
+		if (isbefore(source, targetelem)) {
+			targetelem.parentNode.insertBefore(source, targetelem); //if drag happened in the same tr
+		} else {
+        targetelem.parentNode.insertBefore(source, targetelem.nextSibling); //if drag from one tr and drop it to another tr
+		}
+		}		
+		
+		
+    </script>
+
+
+  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto'); ga('set','transport','beacon'); ga('send', 'pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async></script>
+
+
+</body>
+</html>
